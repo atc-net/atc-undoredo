@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <PackageReference Include="MudBlazor" Version="9.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Atc.UndoRedo.Sample.SharedDemo\Atc.UndoRedo.Sample.SharedDemo.csproj" />
+  </ItemGroup>
+
+</Project>

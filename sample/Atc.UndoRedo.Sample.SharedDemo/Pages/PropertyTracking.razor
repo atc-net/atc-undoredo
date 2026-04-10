@@ -1,0 +1,100 @@
+@page "/demos/property-tracking"
+@implements IDisposable
+
+<PageTitle>Property Tracking - Atc.UndoRedo</PageTitle>
+
+<MudText Typo="Typo.h5" Class="mb-2">Property Tracking</MudText>
+<MudText Typo="Typo.body2" Class="mb-4">
+    Edit form fields that are automatically tracked via <code>UndoRedoPropertyTracker</code>.
+    Each property change is recorded as an undo command without explicit command creation.
+</MudText>
+
+<UndoRedoToolbar Service="service" />
+
+<MudGrid Class="mt-4">
+    <MudItem xs="12" md="8">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudTextField @bind-Value="person.FirstName"
+                          Label="First Name"
+                          Variant="Variant.Outlined"
+                          Class="mb-3" />
+            <MudTextField @bind-Value="person.LastName"
+                          Label="Last Name"
+                          Variant="Variant.Outlined"
+                          Class="mb-3" />
+            <MudNumericField @bind-Value="person.Age"
+                             Label="Age"
+                             Variant="Variant.Outlined"
+                             Class="mb-3" />
+            <MudTextField @bind-Value="person.Email"
+                          Label="Email"
+                          Variant="Variant.Outlined" />
+
+            <MudAlert Severity="Severity.Info" Class="mt-4">
+                Current: @person.FirstName @person.LastName, Age @person.Age, @person.Email
+            </MudAlert>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <HistoryPanel Service="service" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    private readonly UndoRedoService service = new();
+    private UndoRedoPropertyTracker tracker = default!;
+    private readonly PersonModel person = new();
+
+    protected override void OnInitialized()
+    {
+        tracker = new UndoRedoPropertyTracker(service);
+        tracker.Track(person);
+        service.StateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        service.StateChanged -= OnStateChanged;
+        tracker.Dispose();
+    }
+
+    private sealed class PersonModel : System.ComponentModel.INotifyPropertyChanged
+    {
+        private string firstName = "John";
+        private string lastName = "Doe";
+        private int age = 30;
+        private string email = "john@example.com";
+
+        public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+        public string FirstName
+        {
+            get => firstName;
+            set { firstName = value; PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(FirstName))); }
+        }
+
+        public string LastName
+        {
+            get => lastName;
+            set { lastName = value; PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(LastName))); }
+        }
+
+        public int Age
+        {
+            get => age;
+            set { age = value; PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Age))); }
+        }
+
+        public string Email
+        {
+            get => email;
+            set { email = value; PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Email))); }
+        }
+    }
+}

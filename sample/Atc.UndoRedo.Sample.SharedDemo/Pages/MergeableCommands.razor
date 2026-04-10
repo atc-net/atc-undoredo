@@ -1,0 +1,100 @@
+@page "/demos/mergeable-commands"
+
+<PageTitle>Mergeable Commands - Atc.UndoRedo</PageTitle>
+
+<MudText Typo="Typo.h5" Class="mb-2">Mergeable Commands</MudText>
+<MudText Typo="Typo.body2" Class="mb-4">
+    Move the slider rapidly — consecutive changes coalesce into a single undo step via <code>IMergeableUndoCommand</code>.
+    Each slider produces one undo entry regardless of how many intermediate positions it passed through.
+</MudText>
+
+<UndoRedoToolbar Service="service" />
+
+<MudGrid Class="mt-4">
+    <MudItem xs="12" md="8">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Brightness: @brightness</MudText>
+            <MudSlider @bind-Value:get="brightness"
+                       @bind-Value:set="OnBrightnessChanged"
+                       Min="0" Max="100" Step="1"
+                       Color="Color.Primary" />
+
+            <MudText Typo="Typo.subtitle2" Class="mb-2 mt-4">Volume: @volume</MudText>
+            <MudSlider @bind-Value:get="volume"
+                       @bind-Value:set="OnVolumeChanged"
+                       Min="0" Max="100" Step="1"
+                       Color="Color.Secondary" />
+
+            <MudAlert Severity="Severity.Info" Class="mt-4">
+                Try moving a slider, then undoing — the entire drag collapses to one undo step.
+                Different sliders have different merge IDs so they don't merge with each other.
+            </MudAlert>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <HistoryPanel Service="service" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    private const int BrightnessMergeId = 1;
+    private const int VolumeMergeId = 2;
+
+    private readonly UndoRedoService service = new();
+    private int brightness = 50;
+    private int volume = 75;
+
+    private void OnBrightnessChanged(int newValue)
+    {
+        var oldValue = brightness;
+        service.Execute(new SliderCommand(
+            $"Brightness: {newValue}",
+            BrightnessMergeId,
+            () => brightness = newValue,
+            () => brightness = oldValue));
+    }
+
+    private void OnVolumeChanged(int newValue)
+    {
+        var oldValue = volume;
+        service.Execute(new SliderCommand(
+            $"Volume: {newValue}",
+            VolumeMergeId,
+            () => volume = newValue,
+            () => volume = oldValue));
+    }
+
+    private sealed class SliderCommand : IMergeableUndoCommand
+    {
+        private readonly Action execute;
+        private readonly Action unExecute;
+
+        public SliderCommand(string description, int mergeId, Action execute, Action unExecute)
+        {
+            Description = description;
+            MergeId = mergeId;
+            this.execute = execute;
+            this.unExecute = unExecute;
+        }
+
+        public string Description { get; private set; }
+
+        public int MergeId { get; }
+
+        public void Execute() => execute();
+
+        public void UnExecute() => unExecute();
+
+        public bool TryMergeWith(IUndoCommand other)
+        {
+            if (other is not SliderCommand incoming || incoming.MergeId != MergeId)
+            {
+                return false;
+            }
+
+            Description = incoming.Description;
+            return true;
+        }
+    }
+}

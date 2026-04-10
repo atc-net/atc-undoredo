@@ -1,0 +1,58 @@
+@implements IDisposable
+
+<MudPaper Elevation="1" Class="pa-3">
+    <MudText Typo="Typo.subtitle2" Class="mb-2">History</MudText>
+
+    @if (Service.RedoCommands.Count > 0)
+    {
+        <MudText Typo="Typo.caption" Color="Color.Secondary" Class="mb-1">Redo Stack</MudText>
+        @foreach (var cmd in Service.RedoCommands)
+        {
+            <MudChip T="string"
+                     Size="Size.Small"
+                     Color="Color.Default"
+                     Variant="Variant.Outlined"
+                     OnClick="() => Service.RedoTo(cmd)"
+                     Class="mb-1">
+                @cmd.Description
+            </MudChip>
+        }
+        <MudDivider Class="my-2" />
+    }
+
+    <MudText Typo="Typo.caption" Color="Color.Primary" Class="mb-1">
+        @(Service.CanUndo ? "Undo Stack" : "History empty")
+    </MudText>
+
+    @foreach (var cmd in Service.UndoCommands)
+    {
+        <MudChip T="string"
+                 Size="Size.Small"
+                 Color="Color.Primary"
+                 Variant="Variant.Outlined"
+                 OnClick="() => Service.UndoTo(cmd)"
+                 Class="mb-1">
+            @cmd.Description
+        </MudChip>
+    }
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired]
+    public IUndoRedoService Service { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Service.StateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Service.StateChanged -= OnStateChanged;
+    }
+}

@@ -1,0 +1,107 @@
+@page "/demos/command-grouping"
+
+<PageTitle>Command Grouping - Atc.UndoRedo</PageTitle>
+
+<MudText Typo="Typo.h5" Class="mb-2">Command Grouping</MudText>
+<MudText Typo="Typo.body2" Class="mb-4">
+    Multi-step operations grouped via <code>BeginGroup()</code> are undone as a single step.
+    Try swapping two items — the swap involves a remove and insert but undoes atomically.
+</MudText>
+
+<UndoRedoToolbar Service="service" />
+
+<MudGrid Class="mt-4">
+    <MudItem xs="12" md="8">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Items (click two items to swap them)</MudText>
+
+            <MudList T="string">
+                @for (var i = 0; i < items.Count; i++)
+                {
+                    var index = i;
+                    var item = items[i];
+                    var isSelected = selectedIndex == index;
+                    <MudListItem T="string"
+                                 OnClick="() => SelectItem(index)"
+                                 Class="@(isSelected ? "mud-primary-text" : string.Empty)">
+                        @(isSelected ? $"> {item}" : item)
+                    </MudListItem>
+                }
+            </MudList>
+
+            <MudDivider Class="my-3" />
+
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Primary"
+                       OnClick="ReverseAll">
+                Reverse All (grouped)
+            </MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <HistoryPanel Service="service" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    private readonly UndoRedoService service = new();
+    private readonly List<string> items = ["Apple", "Banana", "Cherry", "Date", "Elderberry"];
+    private int? selectedIndex;
+
+    private void SelectItem(int index)
+    {
+        if (selectedIndex is null)
+        {
+            selectedIndex = index;
+            return;
+        }
+
+        if (selectedIndex == index)
+        {
+            selectedIndex = null;
+            return;
+        }
+
+        SwapItems(selectedIndex.Value, index);
+        selectedIndex = null;
+    }
+
+    private void SwapItems(int a, int b)
+    {
+        var itemA = items[a];
+        var itemB = items[b];
+
+        using (service.BeginGroup($"Swap '{itemA}' and '{itemB}'"))
+        {
+            service.Execute(new UndoCommand(
+                $"Move '{itemA}' to position {b}",
+                execute: () => items[a] = itemB,
+                unExecute: () => items[a] = itemA));
+
+            service.Execute(new UndoCommand(
+                $"Move '{itemB}' to position {a}",
+                execute: () => items[b] = itemA,
+                unExecute: () => items[b] = itemB));
+        }
+    }
+
+    private void ReverseAll()
+    {
+        using (service.BeginGroup("Reverse all items"))
+        {
+            for (var i = 0; i < items.Count / 2; i++)
+            {
+                var a = i;
+                var b = items.Count - 1 - i;
+                var valA = items[a];
+                var valB = items[b];
+
+                service.Execute(new UndoCommand(
+                    $"Swap positions {a} and {b}",
+                    execute: () => { items[a] = valB; items[b] = valA; },
+                    unExecute: () => { items[a] = valA; items[b] = valB; }));
+            }
+        }
+    }
+}

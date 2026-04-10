@@ -1,0 +1,107 @@
+@page "/demos/history-viewer"
+
+<PageTitle>History Viewer - Atc.UndoRedo</PageTitle>
+
+<MudText Typo="Typo.h5" Class="mb-2">History Viewer</MudText>
+<MudText Typo="Typo.body2" Class="mb-4">
+    Full history visualization with undo-to and redo-to navigation.
+    Click any command in the history to jump directly to that point. Includes snapshot and save-state tracking.
+</MudText>
+
+<UndoRedoToolbar Service="service" />
+
+<MudGrid Class="mt-4">
+    <MudItem xs="12" md="6">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudText Typo="Typo.subtitle2" Class="mb-3">Actions</MudText>
+
+            <MudStack Row="true" Class="mb-3">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddRandomItem">Add Random Item</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="MarkSaved">Mark Saved</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="CreateSnapshot">Create Snapshot</MudButton>
+            </MudStack>
+
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Items (@items.Count)</MudText>
+            <MudChipSet T="string" ReadOnly="true">
+                @foreach (var item in items)
+                {
+                    <MudChip T="string" Color="Color.Primary" Variant="Variant.Outlined">@item</MudChip>
+                }
+            </MudChipSet>
+
+            @if (items.Count == 0)
+            {
+                <MudText Typo="Typo.body2" Color="Color.Secondary">No items.</MudText>
+            }
+
+            <MudDivider Class="my-3" />
+
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Snapshots</MudText>
+            @if (service.Snapshots.Count == 0)
+            {
+                <MudText Typo="Typo.body2" Color="Color.Secondary">No snapshots yet.</MudText>
+            }
+            else
+            {
+                @foreach (var snapshot in service.Snapshots)
+                {
+                    <MudChip T="string"
+                             Color="Color.Tertiary"
+                             Variant="Variant.Filled"
+                             OnClick="() => service.RestoreSnapshot(snapshot)"
+                             OnClose="() => service.RemoveSnapshot(snapshot)"
+                             Class="mb-1">
+                        @snapshot.Name (@snapshot.CreatedAt.ToString("HH:mm:ss"))
+                    </MudChip>
+                }
+            }
+
+            <MudDivider Class="my-3" />
+
+            <MudAlert Severity="@(service.HasUnsavedChanges ? Severity.Warning : Severity.Success)">
+                @(service.HasUnsavedChanges ? "Unsaved changes" : "All changes saved")
+            </MudAlert>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <HistoryPanel Service="service" />
+
+        <MudPaper Elevation="1" Class="pa-3 mt-4">
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Stats</MudText>
+            <MudSimpleTable Dense="true">
+                <tbody>
+                    <tr><td>Undo stack size</td><td>@service.UndoCommands.Count</td></tr>
+                    <tr><td>Redo stack size</td><td>@service.RedoCommands.Count</td></tr>
+                    <tr><td>Max history</td><td>@service.MaxHistorySize</td></tr>
+                    <tr><td>Snapshots</td><td>@service.Snapshots.Count</td></tr>
+                </tbody>
+            </MudSimpleTable>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    private readonly UndoRedoService service = new();
+    private readonly List<string> items = [];
+    private int counter;
+
+    private static readonly string[] Fruits = ["Apple", "Banana", "Cherry", "Date", "Fig", "Grape", "Kiwi", "Lemon", "Mango", "Orange"];
+
+    private void AddRandomItem()
+    {
+        var item = $"{Fruits[counter % Fruits.Length]} #{++counter}";
+
+        service.Execute(new UndoCommand(
+            $"Add '{item}'",
+            execute: () => items.Add(item),
+            unExecute: () => items.Remove(item)));
+    }
+
+    private void MarkSaved() => service.MarkSaved();
+
+    private void CreateSnapshot()
+    {
+        service.CreateSnapshot($"Snapshot {service.Snapshots.Count + 1}");
+    }
+}

@@ -1,0 +1,81 @@
+@page "/demos/basic"
+
+<PageTitle>Basic Undo/Redo - Atc.UndoRedo</PageTitle>
+
+<MudText Typo="Typo.h5" Class="mb-2">Basic Undo/Redo</MudText>
+<MudText Typo="Typo.body2" Class="mb-4">Add and remove items in a list. Each operation can be undone and redone.</MudText>
+
+<UndoRedoToolbar Service="service" />
+
+<MudGrid Class="mt-4">
+    <MudItem xs="12" md="8">
+        <MudPaper Elevation="1" Class="pa-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-3">
+                <MudTextField @bind-Value="newItem" Label="New item" Variant="Variant.Outlined" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddItem" Disabled="string.IsNullOrWhiteSpace(newItem)">
+                    Add
+                </MudButton>
+            </MudStack>
+
+            <MudList T="string">
+                @foreach (var item in items)
+                {
+                    var captured = item;
+                    <MudListItem T="string">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                            <MudText>@captured</MudText>
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Size="Size.Small"
+                                           OnClick="() => OnRemoveItem(captured)" />
+                        </MudStack>
+                    </MudListItem>
+                }
+            </MudList>
+
+            @if (items.Count == 0)
+            {
+                <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-2">No items yet. Add one above.</MudText>
+            }
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <HistoryPanel Service="service" />
+    </MudItem>
+</MudGrid>
+
+@code {
+    private readonly UndoRedoService service = new();
+    private readonly List<string> items = [];
+    private string newItem = string.Empty;
+
+    private void AddItem()
+    {
+        if (string.IsNullOrWhiteSpace(newItem))
+        {
+            return;
+        }
+
+        var item = newItem;
+        service.Execute(new UndoCommand(
+            $"Add '{item}'",
+            execute: () => items.Add(item),
+            unExecute: () => items.Remove(item)));
+
+        newItem = string.Empty;
+    }
+
+    private void OnRemoveItem(string item)
+    {
+        var index = items.IndexOf(item);
+        if (index < 0)
+        {
+            return;
+        }
+
+        service.Execute(new UndoCommand(
+            $"Remove '{item}'",
+            execute: () => items.Remove(item),
+            unExecute: () => items.Insert(index, item)));
+    }
+}

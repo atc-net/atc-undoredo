@@ -1,0 +1,57 @@
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="theme" IsDarkMode="isDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="ToggleDrawer" />
+        <MudText Typo="Typo.h6" Class="ml-3">Atc.UndoRedo Demos</MudText>
+        <MudSpacer />
+        <MudIconButton Icon="@(isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                       Color="Color.Inherit"
+                       OnClick="ToggleDarkMode" />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <MudNavMenu>
+            <MudNavLink Href="/demos/basic" Icon="@Icons.Material.Filled.PlayArrow">Basic Undo/Redo</MudNavLink>
+            <MudNavLink Href="/demos/property-tracking" Icon="@Icons.Material.Filled.TrackChanges">Property Tracking</MudNavLink>
+            <MudNavLink Href="/demos/command-grouping" Icon="@Icons.Material.Filled.GroupWork">Command Grouping</MudNavLink>
+            <MudNavLink Href="/demos/mergeable-commands" Icon="@Icons.Material.Filled.MergeType">Mergeable Commands</MudNavLink>
+            <MudNavLink Href="/demos/history-viewer" Icon="@Icons.Material.Filled.History">History Viewer</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool drawerOpen = true;
+    private bool isDarkMode;
+
+    private readonly MudTheme theme = new()
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#1976d2",
+            Secondary = "#424242",
+            AppbarBackground = "#1976d2",
+        },
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#90caf9",
+            Secondary = "#b0bec5",
+        },
+    };
+
+    private void ToggleDrawer() => drawerOpen = !drawerOpen;
+
+    private void ToggleDarkMode() => isDarkMode = !isDarkMode;
+}

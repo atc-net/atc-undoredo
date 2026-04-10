@@ -1,0 +1,44 @@
+@implements IDisposable
+
+<MudToolBar Dense="true">
+    <MudTooltip Text="Undo (Ctrl+Z)">
+        <MudIconButton Icon="@Icons.Material.Filled.Undo"
+                       Disabled="!Service.CanUndo"
+                       OnClick="() => Service.Undo()" />
+    </MudTooltip>
+    <MudTooltip Text="Redo (Ctrl+Y)">
+        <MudIconButton Icon="@Icons.Material.Filled.Redo"
+                       Disabled="!Service.CanRedo"
+                       OnClick="() => Service.Redo()" />
+    </MudTooltip>
+    <MudDivider Vertical="true" FlexItem="true" Class="mx-2" />
+    <MudTooltip Text="Clear history">
+        <MudIconButton Icon="@Icons.Material.Filled.ClearAll"
+                       Disabled="!Service.CanUndo && !Service.CanRedo"
+                       OnClick="() => Service.Clear()" />
+    </MudTooltip>
+    @if (Service.HasUnsavedChanges)
+    {
+        <MudChip T="string" Size="Size.Small" Color="Color.Warning" Icon="@Icons.Material.Filled.Edit">Unsaved</MudChip>
+    }
+</MudToolBar>
+
+@code {
+    [Parameter, EditorRequired]
+    public IUndoRedoService Service { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Service.StateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Service.StateChanged -= OnStateChanged;
+    }
+}
