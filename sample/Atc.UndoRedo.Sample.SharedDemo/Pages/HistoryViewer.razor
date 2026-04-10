@@ -1,4 +1,5 @@
 @page "/demos/history-viewer"
+@implements IDisposable
 
 <PageTitle>History Viewer - Atc.UndoRedo</PageTitle>
 
@@ -87,6 +88,21 @@
     private int counter;
 
     private static readonly string[] Fruits = ["Apple", "Banana", "Cherry", "Date", "Fig", "Grape", "Kiwi", "Lemon", "Mango", "Orange"];
+
+    protected override void OnInitialized()
+    {
+        service.StateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        service.StateChanged -= OnStateChanged;
+    }
 
     private void AddRandomItem()
     {

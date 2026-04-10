@@ -17,10 +17,12 @@
             <MudTextField @bind-Value="person.FirstName"
                           Label="First Name"
                           Variant="Variant.Outlined"
+                          Immediate="true"
                           Class="mb-3" />
             <MudTextField @bind-Value="person.LastName"
                           Label="Last Name"
                           Variant="Variant.Outlined"
+                          Immediate="true"
                           Class="mb-3" />
             <MudNumericField @bind-Value="person.Age"
                              Label="Age"
@@ -28,7 +30,8 @@
                              Class="mb-3" />
             <MudTextField @bind-Value="person.Email"
                           Label="Email"
-                          Variant="Variant.Outlined" />
+                          Variant="Variant.Outlined"
+                          Immediate="true" />
 
             <MudAlert Severity="Severity.Info" Class="mt-4">
                 Current: @person.FirstName @person.LastName, Age @person.Age, @person.Email

@@ -1,4 +1,5 @@
 @page "/demos/command-grouping"
+@implements IDisposable
 
 <PageTitle>Command Grouping - Atc.UndoRedo</PageTitle>
 
@@ -48,6 +49,21 @@
     private readonly UndoRedoService service = new();
     private readonly List<string> items = ["Apple", "Banana", "Cherry", "Date", "Elderberry"];
     private int? selectedIndex;
+
+    protected override void OnInitialized()
+    {
+        service.StateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        service.StateChanged -= OnStateChanged;
+    }
 
     private void SelectItem(int index)
     {

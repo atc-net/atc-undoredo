@@ -1,4 +1,5 @@
 @page "/demos/basic"
+@implements IDisposable
 
 <PageTitle>Basic Undo/Redo - Atc.UndoRedo</PageTitle>
 
@@ -11,7 +12,7 @@
     <MudItem xs="12" md="8">
         <MudPaper Elevation="1" Class="pa-4">
             <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-3">
-                <MudTextField @bind-Value="newItem" Label="New item" Variant="Variant.Outlined" />
+                <MudTextField @bind-Value="newItem" Label="New item" Variant="Variant.Outlined" Immediate="true" />
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddItem" Disabled="string.IsNullOrWhiteSpace(newItem)">
                     Add
                 </MudButton>
@@ -48,6 +49,21 @@
     private readonly UndoRedoService service = new();
     private readonly List<string> items = [];
     private string newItem = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        service.StateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        service.StateChanged -= OnStateChanged;
+    }
 
     private void AddItem()
     {

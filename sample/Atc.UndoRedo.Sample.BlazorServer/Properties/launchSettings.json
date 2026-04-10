@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Atc.UndoRedo.Sample.BlazorServer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:18774;http://localhost:18777"
+    }
+  }
+}
