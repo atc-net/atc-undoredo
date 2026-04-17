@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/atc-net/atc-undoredo/compare/v1.0.0...v1.1.0) (2026-04-17)
+
+
+### Features
+
+* add Blazor sample applications ([0f393d0](https://github.com/atc-net/atc-undoredo/commit/0f393d067d08e7300a331676eeb73baee50228b6))
+* extract undo/redo framework from atc-wpf ([1337dc1](https://github.com/atc-net/atc-undoredo/commit/1337dc16a3c29057c4e9ec021cedf38b2325f65f))
+
+
+### Bug Fixes
+
+* add StateChanged subscription to all demo pages ([c2e1143](https://github.com/atc-net/atc-undoredo/commit/c2e1143b4618801125876f6c0e782107de4a7bd1))
+* **ci:** gate NuGet push on release-please release creation ([a802d3e](https://github.com/atc-net/atc-undoredo/commit/a802d3e4bb1158741eac756536fd51cc336be20b))
+* remove trailing newlines from project and manifest files ([288a922](https://github.com/atc-net/atc-undoredo/commit/288a922b8473ac7aeef9119a357dd0e184e9d3eb))
+
 ## [Unreleased]
 
 ### Added
