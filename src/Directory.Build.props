@@ -17,7 +17,7 @@
       or imported from a source package to the generated PDB.
     -->
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
-    <DebugType>embedded</DebugType>
+    <!-- Emit a separate .pdb so a .snupkg can be produced alongside the .nupkg -->
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 </Project>
