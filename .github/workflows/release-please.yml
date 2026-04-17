@@ -45,6 +45,7 @@ jobs:
         run: dotnet pack -c Release --no-restore -o ${GITHUB_WORKSPACE}/packages /p:PublicRelease=true
 
       - name: 📦 Push package to NuGet
+        if: ${{ steps.release.outputs.release_created }}
         env:
           NUGET_KEY: ${{ secrets.NUGET_KEY }}
         run: |
