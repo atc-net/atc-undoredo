@@ -1,14 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="NuGet Package">
     <PackageId>Atc.UndoRedo</PackageId>
-    <Description>A production-grade, platform-agnostic undo/redo framework for .NET. Features dual-stack undo/redo, command grouping, property tracking, command merging, memory-aware trimming, snapshots, serialization, audit logging, and thread safety.</Description>
-    <Authors>atc-net</Authors>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/atc-net/atc-undoredo</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/atc-net/atc-undoredo</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
     <PackageTags>undo;redo;undo-redo;command-pattern;history;atc</PackageTags>
+    <Description>A production-grade, platform-agnostic undo/redo framework for .NET. Features dual-stack undo/redo, command grouping, property tracking, command merging, memory-aware trimming, snapshots, serialization, audit logging, and thread safety.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
