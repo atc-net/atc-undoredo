@@ -42,7 +42,7 @@ jobs:
 
       - name: 🗳️ Creating library package for release
         if: ${{ steps.release.outputs.release_created }}
-        run: dotnet pack -c Release --no-restore -o ${GITHUB_WORKSPACE}/packages /p:PublicRelease=true
+        run: dotnet pack src/Atc.UndoRedo/Atc.UndoRedo.csproj -c Release --no-restore -o ${GITHUB_WORKSPACE}/packages /p:PublicRelease=true
 
       - name: 📦 Push package to NuGet
         if: ${{ steps.release.outputs.release_created }}
