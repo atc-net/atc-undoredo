@@ -5,6 +5,9 @@
   <Folder Name="/test/">
     <Project Path="test/Atc.UndoRedo.Tests/Atc.UndoRedo.Tests.csproj" />
   </Folder>
+  <Folder Name="/docs/">
+    <File Path="README.md" />
+  </Folder>
   <Folder Name="/sample/">
     <Project Path="sample/Atc.UndoRedo.Sample.SharedDemo/Atc.UndoRedo.Sample.SharedDemo.csproj" />
     <Project Path="sample/Atc.UndoRedo.Sample.BlazorServer/Atc.UndoRedo.Sample.BlazorServer.csproj" />
