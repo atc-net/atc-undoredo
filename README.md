@@ -3,7 +3,7 @@
 A production-grade, platform-agnostic undo/redo framework for .NET.
 
 [![NuGet Version](https://img.shields.io/nuget/v/Atc.UndoRedo.svg)](https://www.nuget.org/packages/Atc.UndoRedo)
-[![Build Status](https://github.com/atc-net/atc-undoredo/actions/workflows/ci.yml/badge.svg)](https://github.com/atc-net/atc-undoredo/actions)
+[![Build Status](https://github.com/atc-net/atc-undoredo/actions/workflows/build.yml/badge.svg)](https://github.com/atc-net/atc-undoredo/actions)
 
 ## Features
 
