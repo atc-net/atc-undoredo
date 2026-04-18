@@ -5,6 +5,8 @@
     <PackageTags>undo;redo;undo-redo;command-pattern;history;atc</PackageTags>
     <Description>A production-grade, platform-agnostic undo/redo framework for .NET. Features dual-stack undo/redo, command grouping, property tracking, command merging, memory-aware trimming, snapshots, serialization, audit logging, and thread safety.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- Symbols are embedded via DebugType=embedded; don't emit a separate (empty) .snupkg -->
+    <IncludeSymbols>false</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
