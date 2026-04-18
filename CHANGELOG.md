@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5](https://github.com/atc-net/atc-undoredo/compare/v1.1.4...v1.1.5) (2026-04-18)
+
+
+### Bug Fixes
+
+* **ci:** set IncludeSymbols=false ([66e8f46](https://github.com/atc-net/atc-undoredo/commit/66e8f46061970678885b5dd4bca7e3624f6bfa6e))
+
 ## [1.1.4](https://github.com/atc-net/atc-undoredo/compare/v1.1.3...v1.1.4) (2026-04-17)
 
 
